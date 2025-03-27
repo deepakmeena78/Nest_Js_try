@@ -14,7 +14,7 @@ export class UserController {
     const hashpassword = bcrypt.hashSync(data.password, salt);
     return this.userService.createUser({ ...data, password: hashpassword });
   }
-
+  
   @Get('/get')
   async GetUsers() {
     return this.userService.getUser();
