@@ -1,0 +1,61 @@
+version: '3'
+services:
+  postgres:
+    image: postgres:16
+    container_name: saral-auth-postgres
+    restart: unless-stopped
+    ports:
+      - ${POSTGRES_PORT}:5432
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    volumes:
+      - postgres:/var/lib/postgresql/data
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: saral-auth-pgadmin
+    restart: unless-stopped
+    ports:
+      - ${PGADMIN_PORT}:80
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
+    volumes:
+      - pgadmin:/var/lib/pgadmin
+  redis:
+    image: redis/redis-stack
+    container_name: saral-auth-redis
+    restart: unless-stopped
+    ports:
+      - ${REDIS_PORT}:6379
+      - ${REDISINSIGHT_PORT}:8001
+    environment:
+      - REDIS_ARGS=--requirepass ${REDIS_PASSWORD}
+    volumes:
+      - redis:/data
+  saral-auth:
+    image: saral-auth-dev
+    build:
+      context: .
+      target: saral-auth-dev
+      args:
+        - PORT:${PORT}
+    container_name: saral-auth-dev
+    restart: unless-stopped
+    ports:
+      - ${PORT}:${PORT}
+    depends_on:
+      - postgres
+      - redis
+    volumes:
+      - .:/saral-auth/
+volumes:
+  postgres:
+    name: saral-auth-postgres
+  redis:
+    name: saral-auth-redis
+  pgadmin:
+    name: saral-auth-pgadmin
+networks:
+  default:
+    name: saral-auth
