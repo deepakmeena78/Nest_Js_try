@@ -1,0 +1,307 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum AdminStatus {
+  Active @map("active")
+
+  @@map("admin_status")
+}
+
+model Admin {
+  id           Int         @id @default(autoincrement())
+  firstname    String
+  lastname     String
+  email        String      @unique
+  profileImage String?     @map("profile_image")
+  status       AdminStatus @default(Active)
+  createdAt    DateTime    @default(now()) @map("created_at")
+  updatedAt    DateTime    @updatedAt @map("updated_at")
+  meta         AdminMeta?
+
+  @@map("admin")
+}
+
+model AdminMeta {
+  passwordSalt String? @map("password_salt")
+  passwordHash String? @map("password_hash")
+  admin        Admin   @relation(fields: [adminId], references: [id])
+  adminId      Int     @unique() @map("admin_id")
+
+  @@map("admin_meta")
+}
+
+enum UserStatus {
+  Active  @map("active")
+  Blocked @map("blocked")
+  Suspend @map("suspend")
+
+  @@map("user_status")
+}
+
+enum VerificationStatus {
+  Verified @map("verified")
+  Pending  @map("pending")
+  Rejected @map("rejected")
+
+  @@map("verification_status")
+}
+
+model User {
+  id          Int           @id @default(autoincrement())
+  firstname   String        @default("")
+  lastname    String        @default("")
+  username    String?       @unique
+  email       String?       @unique
+  dialCode    String?       @map("dial_code")
+  mobile      String?       @unique
+  country     String?
+  status      UserStatus    @default(Active)
+  createdAt   DateTime      @default(now()) @map("created_at")
+  updatedAt   DateTime      @updatedAt @map("updated_at")
+  roleType    String        @default("user")
+  meta        UserMeta?
+  Bank        Bank[]
+  BankAccount BankAccount[]
+  Transaction Transaction[]
+
+  @@map("user")
+}
+
+model UserMeta {
+  googleId     String?   @unique @map("google_id")
+  passwordSalt String?   @map("password_salt")
+  passwordHash String?   @map("password_hash")
+  dateOfKyc    DateTime? @map("date_of_kyc")
+  user         User      @relation(fields: [userId], references: [id])
+  userId       Int       @unique() @map("user_id")
+
+  @@map("user_meta")
+}
+
+enum OtpTransport {
+  Email  @map("email")
+  Mobile @map("mobile")
+
+  @@map("otp_transport")
+}
+
+model Otp {
+  code             String
+  attempt          Int          @default(1) @db.SmallInt
+  lastSentAt       DateTime     @default(now()) @map("last_sent_at")
+  retries          Int          @default(0) @db.SmallInt
+  transport        OtpTransport
+  target           String
+  lastCodeVerified Boolean      @default(false) @map("last_code_verified")
+  blocked          Boolean      @default(false)
+
+  @@unique([transport, target])
+  @@map("otp")
+}
+
+enum SettingType {
+  Binary       @map("binary")
+  MultiSelect  @map("multi_select")
+  SingleSelect @map("single_select")
+
+  @@map("setting_type")
+}
+
+enum SettingContext {
+  User   @map("user")
+  System @map("System")
+
+  @@map("setting_context")
+}
+
+model Setting {
+  id               Int             @id @default(autoincrement())
+  mappedTo         String          @map("mapped_to")
+  text             String          @default("")
+  description      String          @default("")
+  type             SettingType
+  context          SettingContext
+  default          Json
+  isDefinedOptions Boolean         @map("is_defined_options")
+  subSettings      Setting[]       @relation("SubSettings")
+  dependsOn        Setting?        @relation("SubSettings", fields: [parentId], references: [id])
+  parentId         Int?            @map("parent_id")
+  options          SettingOption[]
+  userSettings     UserSetting[]
+  systemSettings   SystemSetting[]
+
+  @@unique([context, mappedTo])
+  @@map("setting")
+}
+
+model SettingOption {
+  id        Int     @id @default(autoincrement())
+  text      String  @default("")
+  value     String
+  setting   Setting @relation(fields: [settingId], references: [id])
+  settingId Int     @map("setting_id")
+
+  @@unique([settingId, value])
+  @@map("setting_option")
+}
+
+model UserSetting {
+  selection Json
+  userId    Int     @map("user_id")
+  setting   Setting @relation(fields: [settingId], references: [id])
+  settingId Int     @map("setting_id")
+
+  @@id([userId, settingId])
+  @@map("user_setting")
+}
+
+model SystemSetting {
+  selection Json
+  setting   Setting @relation(fields: [settingId], references: [id])
+  settingId Int     @map("setting_id")
+
+  @@id([settingId])
+  @@map("system_setting")
+}
+
+enum RBIStatus {
+  Active @map("active")
+
+  @@map("rbi_status")
+}
+
+model RBI {
+  id           Int       @id @default(autoincrement())
+  name         String
+  email        String    @unique
+  profileImage String?   @map("profile_image")
+  status       RBIStatus @default(Active)
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
+  meta         RbiMeta?
+
+  @@map("rbi")
+}
+
+model RbiMeta {
+  passwordSalt String? @map("password_salt")
+  passwordHash String? @map("password_hash")
+  rbi          RBI     @relation(fields: [rbiId], references: [id])
+  rbiId        Int     @unique @map("rbi_id")
+
+  @@map("rbi_meta")
+}
+
+enum BankStatus {
+  Pending
+  Approved
+  Rejected
+}
+
+enum BankName {
+  SBI
+  HDFC
+  ICICI
+  AXIS
+  PNB
+  BOB
+  KOTAK
+  YES
+  UNION
+  IDFC
+}
+
+model Bank {
+  id           Int           @id @default(autoincrement())
+  bank_name    BankName
+  status       BankStatus?   @default(Pending)
+  reason       String?       @default("null")
+  location     String?
+  document     String?
+  owner_name   String
+  totalBalance Float?        @default(0) @map("total_balance")
+  createdAt    DateTime      @default(now()) @map("created_at")
+  updatedAt    DateTime      @updatedAt @map("updated_at")
+  owner        User          @relation(fields: [ownerId], references: [id])
+  ownerId      Int           @map("owner_id")
+  accounts     BankAccount[]
+
+  @@map("bank")
+}
+
+model BankAccount {
+  id        Int           @id @default(autoincrement())
+  aadhar    String
+  panCard   String
+  balance   Float         @default(0)
+  Acfreeze  Boolean       @default(false)
+  user      User          @relation(fields: [userId], references: [id])
+  userId    Int           @map("user_id")
+  bank      Bank          @relation(fields: [bankId], references: [id])
+  bankId    Int           @map("bank_id")
+  createdAt DateTime      @default(now()) @map("created_at")
+  updatedAt DateTime      @updatedAt @map("updated_at")
+  fromTxns  Transaction[] @relation("FromAccount")
+  toTxns    Transaction[] @relation("ToAccount")
+
+
+  @@unique([userId, bankId])
+  @@map("bank_account")
+}
+
+model Transaction {
+  id            Int         @id @default(autoincrement())
+  amount        Float
+  fromAccount   BankAccount @relation("FromAccount", fields: [fromAccountId], references: [id])
+  fromAccountId Int         @map("from_account_id")
+  toAccount     BankAccount @relation("ToAccount", fields: [toAccountId], references: [id])
+  toAccountId   Int         @map("to_account_id")
+  user          User        @relation(fields: [userId], references: [id])
+  userId        Int         @map("user_id")
+  createdAt     DateTime    @default(now()) @map("created_at")
+
+  @@map("transaction")
+}
+
+// -------------------------------------------------------------
+
+enum PermissionAction {
+  CREATE
+  READ
+  UPDATE
+  DELETE
+}
+
+model Permission {
+  id      Int              @id @default(autoincrement())
+  feature String
+  action  PermissionAction
+  desc    String
+
+  roles PermissionRole[]
+}
+
+model Role {
+  id       Int     @id @default(autoincrement())
+  name     String  @unique
+  isActive Boolean
+
+  permissions PermissionRole[]
+}
+
+model PermissionRole {
+  id           Int @id @default(autoincrement())
+  roleId       Int
+  permissionId Int
+
+  role       Role       @relation(fields: [roleId], references: [id])
+  permission Permission @relation(fields: [permissionId], references: [id])
+
+  @@unique([roleId, permissionId])
+}

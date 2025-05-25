@@ -1,0 +1,92 @@
+doctype html
+html
+  head
+    meta(charset='UTF-8')
+    title Welcome to MST Blockchain
+    style.
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        color: #333;
+        padding: 0;
+        margin: 0;
+      }
+      .container {
+        max-width: 600px;
+        margin: 40px auto;
+        background-color: #ffffff;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+      }
+      h1 {
+        color: #004aad;
+        margin-bottom: 20px;
+        font-size: 24px;
+      }
+      p {
+        line-height: 1.6;
+        margin: 10px 0;
+        font-size: 15px;
+      }
+      .details {
+        margin: 20px 0;
+        background-color: #f9f9f9;
+        padding: 15px;
+        border-radius: 8px;
+        border: 1px solid #e0e0e0;
+      }
+      .details p {
+        margin: 6px 0;
+        font-size: 14px;
+      }
+      strong {
+        color: #000;
+      }
+      a {
+        color: #004aad;
+        text-decoration: none;
+      }
+      a:hover {
+        text-decoration: underline;
+      }
+      .footer {
+        margin-top: 30px;
+        font-size: 13px;
+        color: #666;
+      }
+
+  body
+    .container
+      h1 Welcome to Ventursa Portal
+      p Dear #{ name },
+      p Congratulations! You have successfully registered on our portal as a #{ businessType } partner. We are excited to have you as a part of our community.
+
+      .details
+        p
+          strong Full Name :
+          | #{ name }
+        p
+          strong Email :
+          | #{ email }
+        p
+          strong Mobile Number :
+          | #{ phoneNumber }
+        p
+          strong Address :
+          | #{ address }
+        p
+          strong Verification Status :
+          | #{ isVerified }
+
+      p To get started, simply log in to your account at
+        a(
+          href='https://ventursa-portal.codesfortomorrow.com/',
+          target='_blank'
+        ) https://ventursa-portal.codesfortomorrow.com/
+
+      .footer
+        p If you have any questions or need assistance, don’t hesitate to reach out to our support team.
+        p Thank you for joining us!
+        p Best regards,
+        p Team MST Blockchain

@@ -1,0 +1,89 @@
+doctype html
+html
+  head
+    meta(charset='UTF-8')
+    title Registration Rejection - Ventursa
+    style.
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f5f5f5;
+        color: #333;
+        padding: 0;
+        margin: 0;
+      }
+      .container {
+        max-width: 600px;
+        margin: 40px auto;
+        background-color: #fff;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+      h1 {
+        color: #c0392b;
+        font-size: 24px;
+        margin-bottom: 20px;
+      }
+      p {
+        font-size: 15px;
+        line-height: 1.6;
+        margin: 10px 0;
+      }
+      .details {
+        margin: 20px 0;
+        border-top: 1px solid #ddd;
+        padding-top: 15px;
+      }
+      .details p {
+        margin: 5px 0;
+      }
+      .rejection-box {
+        background-color: #fff3f3;
+        border: 1px solid #e74c3c;
+        padding: 15px;
+        border-radius: 6px;
+        color: #c0392b;
+        font-weight: bold;
+        margin: 20px 0;
+      }
+      .footer {
+        margin-top: 30px;
+        font-size: 13px;
+        color: #777;
+      }
+
+  body
+    .container
+      h1 Organization Registration Rejected
+
+      p Dear #{ name },
+
+      p We appreciate your interest in registering your organization with Ventursa. After carefully reviewing your submission, we regret to inform you that your registration has been rejected.
+
+      .rejection-box
+        p Reason for Rejection:
+        p #{ organizationRejectionReason }
+
+      .details
+        p
+          strong Business Type:
+          | #{ businessType }
+        p
+          strong Address:
+          | #{ address || 'Not Provided' }
+        p
+          strong Email:
+          | #{ email || 'Not Provided' }
+        p
+          strong Phone Number:
+          | #{ phoneNumber || 'Not Provided' }
+        p
+          strong Date of Incorporation:
+          | #{ dateOfIncorporation || 'Not Provided' }
+
+      p If you believe this was a mistake or would like to reapply with updated information, please feel free to reach out to our support team.
+
+      .footer
+        p Thank you for your understanding,
+        p Best regards,
+        p Ventursa Team

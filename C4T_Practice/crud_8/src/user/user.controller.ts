@@ -2,7 +2,6 @@ import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { UserService } from './user.service';
 import * as bcrypt from 'bcryptjs';
 import { CreateStudentDto } from './dto/create.dto';
-import { UpdateStudentDto } from './dto/update.dto';
 
 @Controller('user')
 export class UserController {
@@ -10,11 +9,10 @@ export class UserController {
 
   @Post('/create')
   async CreateUser(@Body() data: CreateStudentDto) {
-    const salt = 10;
-    const hashpassword = bcrypt.hashSync(data.password, salt);
-    return this.userService.createUser({ ...data, password: hashpassword });
+    const hashpassword = bcrypt.hashSync(data.password, 10);
+    return await this.userService.createUser({ ...data, password: hashpassword });
   }
-  
+
   @Get('/get')
   async GetUsers() {
     return this.userService.getUser();
@@ -25,15 +23,14 @@ export class UserController {
     return this.userService.loginUser(data);
   }
 
-  @Post('/update')
-  async Update(@Body() data: UpdateStudentDto) {
-    const salt = 10;
-    const hashpassword = bcrypt.hashSync(data?.password, salt);
-    return this.userService.updateUser({ ...data});
-  }
-  
+  // @Post('/update')
+  // async Update(@Body() data: UpdateStudentDto) {
+  //   const salt = 10;
+  //   const hashpassword = bcrypt.hashSync(data?.password, salt);
+  //   return this.userService.updateUser({ ...data});
+  // }
 
-  @Post('delete/:id') 
+  @Post('delete/:id')
   async Delete(@Param('id') id: number) {
     return this.userService.deleteUser(Number(id));
   }

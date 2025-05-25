@@ -9,8 +9,6 @@ export class AppController {
   getHello(): string {
     return this.appService.getHello();
   }
-
-
   
   @Post()
   createStudent(@Body() body: { data: string }): string {

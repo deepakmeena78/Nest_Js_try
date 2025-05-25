@@ -9,7 +9,7 @@ import { AppService } from './app.service';
   imports: [
     ConfigModule.forRoot(),
     PrismaModule,
-    StudentModule, // ✅ Import StudentModule
+    StudentModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -7,11 +7,11 @@ export class UserService {
   constructor(private prisma: PrismaService) {}
 
   // Create User
-  async createUser(
-    @Body() data: { name: string; email: string; password: string },
-  ) {
-    return this.prisma.user.create({ data });
-  }
+    async createUser(
+      @Body() data: { name: string; email: string; password: string },
+    ) {
+      return this.prisma.user.create({ data });
+    }
 
   //  Get Users
   async getUser() {

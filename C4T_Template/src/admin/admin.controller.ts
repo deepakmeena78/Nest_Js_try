@@ -56,6 +56,7 @@ export class AdminController extends BaseController {
     return { status: 'success' };
   }
 
+  
   @Post('profile-image')
   updateProfileImage(
     @Req() req: AuthenticatedRequest,

@@ -1,0 +1,68 @@
+doctype html
+html
+  head
+    meta(charset='UTF-8')
+    title Email Verification - Ventursa
+    style.
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f5f5f5;
+        color: #333;
+        padding: 0;
+        margin: 0;
+      }
+      .container {
+        max-width: 600px;
+        margin: 40px auto;
+        background-color: #ffffff;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+      h1 {
+        color: #004aad;
+        font-size: 24px;
+        margin-bottom: 20px;
+      }
+      p {
+        font-size: 15px;
+        line-height: 1.6;
+        margin: 10px 0;
+      }
+      .otp-box {
+        display: block;
+        font-size: 22px;
+        font-weight: bold;
+        background-color: #e6f0ff;
+        border: 2px dashed #004aad;
+        padding: 15px;
+        text-align: center;
+        border-radius: 8px;
+        margin: 25px 0;
+        color: #004aad;
+        letter-spacing: 4px;
+      }
+      .footer {
+        margin-top: 30px;
+        font-size: 13px;
+        color: #777;
+      }
+
+  body
+    .container
+      h1 Email Verification
+
+      p Dear #{ username },
+
+      p We're thrilled to welcome you to Ventursa! To continue with your registration, please verify your email address using the One-Time Password (OTP) provided below.
+
+      .otp-box #{ code }
+
+      p For your security, this OTP is valid for the next #{ expirationTime }.
+
+      p If you did not initiate this registration, please disregard this message or get in touch with our support team.
+
+      .footer
+        p Thank you,
+        p Best regards,
+        p Ventursa Team

@@ -1,0 +1,45 @@
+version: '3'
+services:
+  postgres:
+    image: postgres:16
+    container_name: ventursa-postgres
+    restart: unless-stopped
+    ports:
+      - ${POSTGRES_PORT}:5432
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    volumes:
+      - ${POSTGRES_DATA_VOLUME}:/var/lib/postgresql/data
+  redis:
+    image: redis/redis-stack-server
+    container_name: ventursa-redis
+    restart: unless-stopped
+    ports:
+      - ${REDIS_PORT}:6379
+    environment:
+      - REDIS_ARGS=--requirepass ${REDIS_PASSWORD}
+    volumes:
+      - ${REDIS_DATA_VOLUME}:/data
+  ventursa:
+    image: ventursa-${APP_ENV}
+    build:
+      context: .
+      target: ventursa
+      args:
+        - PORT:${PORT}
+    container_name: ventursa-${APP_ENV}
+    restart: unless-stopped
+    ports:
+      - ${PORT}:${PORT}
+    # Uncomment this to disable run application on standalone mode
+    # depends_on:
+    #   - postgres
+    #   - redis
+    volumes:
+      - .env:/ventursa/.env:ro
+      - ${STORAGE_DATA_VOLUME}:/ventursa/${STORAGE_DIR}
+      - ${LOG_VOLUME}:/ventursa/${LOG_DIR}
+networks:
+  default:
+    name: ventursa
